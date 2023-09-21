@@ -1,0 +1,4 @@
+- name: checking if user exits or not
+  ansible.builtin.command: id roboshop
+  register: output
+  ignore_errors: true 
