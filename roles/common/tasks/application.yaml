@@ -2,3 +2,31 @@
   ansible.builtin.command: id roboshop
   register: output
   ignore_errors: true 
+- name: printing the exiting status
+  ansible.builtin.debug:
+    msg: "{{output.rc}}"
+- name: creating the user
+  ansible.builtin.user:
+    name: roboshop
+  when: output.rc != 0
+- name: check app directory exits or not
+  ansible.builtin.stat:
+    path: /app
+  register: directory
+- name: printing the directory state
+  ansible.builtin.debug:
+    msg: "output:{{directory}}"
+- name: creating app directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+  when: directory.stat.exists == False
+- name: download {{component}} artifact
+  ansible.builtin.get_url:
+    url: https://roboshop-builds.s3.amazonaws.com/{{component}}.zip
+    dest: /tmp
+- name: extract the {{component}} artifact
+  ansible.builtin.unarchive:
+    src: /tmp/{{component}}.zip
+    dest: /app
+    remote_src: yes
