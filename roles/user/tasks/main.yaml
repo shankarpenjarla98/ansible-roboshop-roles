@@ -1,0 +1,25 @@
+- name: Installing the nodejs
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: nodejs
+- name: Application set-up
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: application
+- name: Dependencies install
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: dependencies
+- name: Systemd reload
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: systemd
+- name: Load-Schema
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: load-schema
+- name: restart user
+  ansible.builtin.service:
+    name: user
+    state: restarted
+    enabled: true
